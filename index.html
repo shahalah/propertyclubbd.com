@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Local Video Course</title>
+  <style>
+    body          { font-family: system-ui, sans-serif; text-align: center; padding: 20px; }
+    .wrapper      { display: none; margin: 20px auto; max-width: 720px; }
+    .active       { display: block; }
+
+    /* video container + shield */
+    .video-frame   { position: relative; }
+    video          { width: 100%; max-height: 405px; }
+    .video-shield  {
+      position: absolute; inset: 0;
+      background: #000; opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .video-frame.ended .video-shield {
+      opacity: .92;         /* darken */
+      pointer-events: auto; /* block clicks */
+    }
+
+    .lesson-title { margin: 10px 0 15px; font-weight: 600; font-size: 1.1rem; }
+    .next-btn     { display: none; margin-top: 15px; padding: 10px 25px; font-size: 1rem; cursor: pointer; }
+    .done         { font-size: 1.3rem; color: green; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <!-- Preview -->
+  <div class="wrapper active" id="previewBox">
+    <h2>Welcome to the Offline Course</h2>
+    <p>Watch lessons in order. Skipping is disabled. Progress is saved.</p>
+    <button id="startBtn">Start Lesson 1 ▶</button>
+  </div>
+
+  <!-- Lesson 1 -->
+  <div class="wrapper" id="box1">
+    <h3 class="lesson-title">Lesson 1: Introduction</h3>
+    <div class="video-frame" id="vframe1">
+      <video id="video1" preload="metadata" controls>
+        <source src="lesson1.mp4" type="video/mp4">
+      </video>
+      <div class="video-shield"></div>
+    </div>
+    <button class="next-btn" id="btn1">Next Video ▶</button>
+  </div>
+
+  <!-- Lesson 2 -->
+  <div class="wrapper" id="box2">
+    <h3 class="lesson-title">Lesson 2: Getting Started</h3>
+    <div class="video-frame" id="vframe2">
+      <video id="video2" preload="metadata" controls>
+        <source src="lesson2.mp4" type="video/mp4">
+      </video>
+      <div class="video-shield"></div>
+    </div>
+    <button class="next-btn" id="btn2">Next Video ▶</button>
+  </div>
+
+  <!-- Lesson 3 -->
+  <div class="wrapper" id="box3">
+    <h3 class="lesson-title">Lesson 3: Final Steps</h3>
+    <div class="video-frame" id="vframe3">
+      <video id="video3" preload="metadata" controls>
+        <source src="lesson3.mp4" type="video/mp4">
+      </video>
+      <div class="video-shield"></div>
+    </div>
+    <!-- no next button on last lesson -->
+  </div>
+
+  <!-- Completion -->
+  <div class="wrapper" id="completionBox">
+    <h2>🎉 Course Completed!</h2>
+    <p class="done">You have watched all lessons. Thank you!</p>
+  </div>
+
+<script>
+/* ───────────────── USER CONFIG ───────────────── */
+const PROGRESS_KEY = 'ytCourse_lastDone';   // keep same key name
+const lessonVideos = [                      // video element IDs (order matters)
+  document.getElementById('video1'),
+  document.getElementById('video2'),
+  document.getElementById('video3')
+];
+/* ───────────────── INTERNALS ─────────────────── */
+let highestDone = localStorage.getItem(PROGRESS_KEY);
+if (highestDone === null) {
+  highestDone = -1;
+} else {
+  highestDone = Number(highestDone);
+  if (isNaN(highestDone)) highestDone = -1;
+}
+
+
+/* Show correct wrapper */
+function showBox(idx){
+  document.querySelectorAll('.wrapper').forEach(w=>w.classList.remove('active'));
+  if(idx >= lessonVideos.length)      document.getElementById('completionBox').classList.add('active');
+  else if(idx === -1)                 document.getElementById('previewBox').classList.add('active');
+  else                                document.getElementById(`box${idx+1}`).classList.add('active');
+}
+
+/* Start / resume */
+if(highestDone >= lessonVideos.length-1) showBox(lessonVideos.length);
+else if(highestDone >= 0)                showBox(highestDone+1);
+else                                      showBox(-1);
+
+document.getElementById('startBtn').onclick = () => showBox(highestDone+1);
+
+/* Anti‑skip + unlock logic */
+lessonVideos.forEach((vid, i)=>{
+  let lastTime = 0;
+
+  /* block forward seeking */
+  vid.addEventListener('seeking', ()=>{
+    if(vid.currentTime > lastTime + 0.5) vid.currentTime = lastTime;
+  });
+
+  /* update lastTime regularly */
+  vid.addEventListener('timeupdate', ()=>{
+    if(!vid.seeking) lastTime = vid.currentTime;
+  });
+
+  /* when video ends */
+  vid.addEventListener('ended', ()=>{
+    document.getElementById(`vframe${i+1}`).classList.add('ended');   // black shield
+    const btn = document.getElementById(`btn${i+1}`);
+    if(btn) btn.style.display = 'inline-block';
+
+    if(i > highestDone){
+      highestDone = i;
+      localStorage.setItem(PROGRESS_KEY, highestDone);
+    }
+
+    // Show completion screen immediately if last lesson finished
+    if(i === lessonVideos.length - 1){
+      showBox(lessonVideos.length);
+    }
+  });
+});
+
+/* Next buttons */
+[1,2].forEach(i=>{
+  const btn=document.getElementById(`btn${i}`);
+  if(!btn) return;
+  btn.onclick = ()=>{
+    showBox(i);
+    lessonVideos[i-1].pause();
+    lessonVideos[i].play();
+    btn.style.display='none';
+  };
+});
+</script>
+</body>
+</html>
