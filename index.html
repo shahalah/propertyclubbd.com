@@ -36,7 +36,7 @@
 
   <!-- Lesson 1 -->
   <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: Introduction</h3>
+    <h3 class="lesson-title">Lesson 1: What is Real Estate</h3>
     <div class="video-frame" id="vframe1">
       <video id="video1" preload="metadata" controls>
         <source src="What_is_Real_Estate.mp4" type="video/mp4">
@@ -48,7 +48,7 @@
 
   <!-- Lesson 2 -->
   <div class="wrapper" id="box2">
-    <h3 class="lesson-title">Lesson 2: Getting Started</h3>
+    <h3 class="lesson-title">Lesson 2: Comunication</h3>
     <div class="video-frame" id="vframe2">
       <video id="video2" preload="metadata" controls>
         <source src="Comunication.mp4" type="video/mp4">
@@ -60,7 +60,7 @@
 
   <!-- Lesson 3 -->
   <div class="wrapper" id="box3">
-    <h3 class="lesson-title">Lesson 3: Final Steps</h3>
+    <h3 class="lesson-title">Lesson 3: How To impress clients</h3>
     <div class="video-frame" id="vframe3">
       <video id="video3" preload="metadata" controls>
         <source src="How_to_Impress_Clients_।_Real_Estate_BD_।_School_of.mp4" type="video/mp4">
@@ -70,10 +70,10 @@
     <!-- no next button on last lesson -->
   </div>
   <!-- Lesson 4 -->
-  <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: Introduction</h3>
-    <div class="video-frame" id="vframe1">
-      <video id="video1" preload="metadata" controls>
+  <div class="wrapper" id="box4">
+    <h3 class="lesson-title">Lesson 4: How to be a successful Real Estate agent</h3>
+    <div class="video-frame" id="vframe4">
+      <video id="video4" preload="metadata" controls>
         <source src="How_to_be_a_SUCCESSFUL_Real_Estate_Agent.mp4" type="video/mp4">
       </video>
       <div class="video-shield"></div>
@@ -81,10 +81,10 @@
     <button class="next-btn" id="btn1">Next Video ▶</button>
   </div>
     <!-- Lesson 5 -->
-  <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: Introduction</h3>
-    <div class="video-frame" id="vframe1">
-      <video id="video1" preload="metadata" controls>
+  <div class="wrapper" id="box5">
+    <h3 class="lesson-title">Lesson 5: How to tie a tie</h3>
+    <div class="video-frame" id="vframe5">
+      <video id="video5" preload="metadata" controls>
         <source src="How_to_tie_a_tie.mp4" type="video/mp4">
       </video>
       <div class="video-shield"></div>
@@ -92,10 +92,10 @@
     <button class="next-btn" id="btn1">Next Video ▶</button>
   </div>
     <!-- Lesson 6 -->
-  <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: Introduction</h3>
-    <div class="video-frame" id="vframe1">
-      <video id="video1" preload="metadata" controls>
+  <div class="wrapper" id="box6">
+    <h3 class="lesson-title">Lesson 6: Fashion club ladies blazer wholesale</h3>
+    <div class="video-frame" id="vframe6">
+      <video id="video6" preload="metadata" controls>
         <source src="fashion_club_ladies_blazer_wholesale.mp4
 " type="video/mp4">
       </video>
@@ -104,10 +104,10 @@
     <button class="next-btn" id="btn1">Next Video ▶</button>
   </div>
     <!-- Lesson 7 -->
-  <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: Introduction</h3>
-    <div class="video-frame" id="vframe1">
-      <video id="video1" preload="metadata" controls>
+  <div class="wrapper" id="box7">
+    <h3 class="lesson-title">Lesson 7: Glustan Blazer Market</h3>
+    <div class="video-frame" id="vframe7">
+      <video id="video7" preload="metadata" controls>
         <source src="Gulistan_Blazer_Market_Daily_Ittefaq.mp4" type="video/mp4">
       </video>
       <div class="video-shield"></div>
@@ -126,7 +126,12 @@ const PROGRESS_KEY = 'ytCourse_lastDone';   // keep same key name
 const lessonVideos = [                      // video element IDs (order matters)
   document.getElementById('video1'),
   document.getElementById('video2'),
-  document.getElementById('video3')
+  document.getElementById('video3'),
+  document.getElementById('video4'),
+  document.getElementById('video5'),
+  document.getElementById('video6'),
+  document.getElementById('video7'),
+
 ];
 /* ───────────────── INTERNALS ─────────────────── */
 let highestDone = localStorage.getItem(PROGRESS_KEY);
@@ -199,4 +204,5 @@ lessonVideos.forEach((vid, i)=>{
 </script>
 </body>
 </html>
+
 
