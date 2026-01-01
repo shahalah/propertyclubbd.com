@@ -1,208 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Local Video Course</title>
-  <style>
-    body          { font-family: system-ui, sans-serif; text-align: center; padding: 20px; }
-    .wrapper      { display: none; margin: 20px auto; max-width: 720px; }
-    .active       { display: block; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Realtor Circle - Training</title>
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --accent: #f2a900;
+            --text: #333;
+            --light: #f4f7f6;
+        }
 
-    /* video container + shield */
-    .video-frame   { position: relative; }
-    video          { width: 100%; max-height: 405px; }
-    .video-shield  {
-      position: absolute; inset: 0;
-      background: #000; opacity: 0; pointer-events: none;
-      transition: opacity .25s;
-    }
-    .video-frame.ended .video-shield {
-      opacity: .92;         /* darken */
-      pointer-events: auto; /* block clicks */
-    }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--light); color: var(--text); }
+        
+        /* Header & Footer */
+        header { background: var(--primary); color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        footer { background: #222; color: #ccc; padding: 20px; font-size: 0.9rem; margin-top: 50px; }
+        
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; min-height: 70vh; }
+        
+        /* Form Section */
+        #registration-section { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Course Elements */
+        .wrapper { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .active { display: block; animation: fadeIn 0.5s; }
+        
+        .video-frame { position: relative; background: #000; border-radius: 8px; overflow: hidden; }
+        video { width: 100%; display: block; aspect-ratio: 16/9; }
+        
+        .video-shield { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; color: white; pointer-events: none; }
+        .ended .video-shield { display: flex; pointer-events: auto; }
 
-    .lesson-title { margin: 10px 0 15px; font-weight: 600; font-size: 1.1rem; }
-    .next-btn     { display: none; margin-top: 15px; padding: 10px 25px; font-size: 1rem; cursor: pointer; }
-    .done         { font-size: 1.3rem; color: green; margin-top: 40px; }
-  </style>
+        .btn { 
+            background: var(--primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s; margin-top: 15px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .next-btn { display: none; background: #28a745; }
+        #examBtn { background: var(--accent); color: #000; font-weight: bold; font-size: 1.2rem; display: none; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.2rem; }
+            .container { margin: 10px auto; }
+            .btn { width: 100%; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Preview -->
-  <div class="wrapper active" id="previewBox">
-    <h2>Welcome to the Offline Course</h2>
-    <p>Watch lessons in order. Skipping is disabled. Progress is saved.</p>
-    <button id="startBtn">Start Lesson 1 ▶</button>
-  </div>
+<header>
+    <h1>Global Realtor Circle</h1>
+    <p>Official Agent Certification Portal</p>
+</header>
 
-  <!-- Lesson 1 -->
-  <div class="wrapper" id="box1">
-    <h3 class="lesson-title">Lesson 1: What is Real Estate</h3>
-    <div class="video-frame" id="vframe1">
-      <video id="video1" preload="metadata" controls>
-        <source src="What_is_Real_Estate.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
+<div class="container">
+    
+    <div id="registration-section">
+        <h2>Agent Registration</h2>
+        <p>Please fill in your details to begin the course.</p>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="userName" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="userEmail" placeholder="Enter your email" required>
+        </div>
+        <button class="btn" onclick="startCourse()">Access Training ▶</button>
     </div>
-    <button class="next-btn" id="btn1">Next Video ▶</button>
-  </div>
 
-  <!-- Lesson 2 -->
-  <div class="wrapper" id="box2">
-    <h3 class="lesson-title">Lesson 2: Comunication</h3>
-    <div class="video-frame" id="vframe2">
-      <video id="video2" preload="metadata" controls>
-        <source src="Comunication.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
-    </div>
-    <button class="next-btn" id="btn2">Next Video ▶</button>
-  </div>
+    <div id="course-content" style="display: none;">
+        
+        <div class="wrapper" id="previewBox">
+            <h2>Welcome, <span id="displayUserName"></span>!</h2>
+            <p>You must watch all 7 lessons to unlock the final exam. Skipping is disabled.</p>
+            <button class="btn" id="startBtn">Start Lesson 1 ▶</button>
+        </div>
 
-  <!-- Lesson 3 -->
-  <div class="wrapper" id="box3">
-    <h3 class="lesson-title">Lesson 3: How To impress clients</h3>
-    <div class="video-frame" id="vframe3">
-      <video id="video3" preload="metadata" controls>
-        <source src="How_to_Impress_Clients_।_Real_Estate_BD_।_School_of.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
+        <div class="wrapper" id="box1">
+            <h3>Lesson 1: What is Real Estate</h3>
+            <div class="video-frame" id="vframe1"><video id="video1" controls><source src="What_is_Real_Estate.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn1">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box2">
+            <h3>Lesson 2: Communication</h3>
+            <div class="video-frame" id="vframe2"><video id="video2" controls><source src="Comunication.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn2">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box3">
+            <h3>Lesson 3: How To Impress Clients</h3>
+            <div class="video-frame" id="vframe3"><video id="video3" controls><source src="How_to_Impress_Clients.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn3">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box4">
+            <h3>Lesson 4: Successful Agent Tips</h3>
+            <div class="video-frame" id="vframe4"><video id="video4" controls><source src="How_to_be_a_SUCCESSFUL_Real_Estate_Agent.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn4">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box5">
+            <h3>Lesson 5: How to Tie a Tie</h3>
+            <div class="video-frame" id="vframe5"><video id="video5" controls><source src="How_to_tie_a_tie.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn5">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box6">
+            <h3>Lesson 6: Professional Attire</h3>
+            <div class="video-frame" id="vframe6"><video id="video6" controls><source src="fashion_club_ladies_blazer_wholesale.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn6">Next Lesson ▶</button>
+        </div>
+
+        <div class="wrapper" id="box7">
+            <h3>Lesson 7: Market Knowledge</h3>
+            <div class="video-frame" id="vframe7"><video id="video7" controls><source src="Gulistan_Blazer_Market_Daily_Ittefaq.mp4" type="video/mp4"></video><div class="video-shield">✓ Lesson Complete</div></div>
+            <button class="btn next-btn" id="btn7">Finish Course ▶</button>
+        </div>
+
+        <div class="wrapper" id="completionBox">
+            <h2>🎉 All Lessons Completed!</h2>
+            <p>Great job! You have finished the video portion of the training.</p>
+            <button id="examBtn" class="btn" onclick="alert('Starting Exam...')">START FINAL EXAM 📝</button>
+        </div>
     </div>
-    <!-- no next button on last lesson -->
-  </div>
-  <!-- Lesson 4 -->
-  <div class="wrapper" id="box4">
-    <h3 class="lesson-title">Lesson 4: How to be a successful Real Estate agent</h3>
-    <div class="video-frame" id="vframe4">
-      <video id="video4" preload="metadata" controls>
-        <source src="How_to_be_a_SUCCESSFUL_Real_Estate_Agent.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
-    </div>
-    <button class="next-btn" id="btn1">Next Video ▶</button>
-  </div>
-    <!-- Lesson 5 -->
-  <div class="wrapper" id="box5">
-    <h3 class="lesson-title">Lesson 5: How to tie a tie</h3>
-    <div class="video-frame" id="vframe5">
-      <video id="video5" preload="metadata" controls>
-        <source src="How_to_tie_a_tie.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
-    </div>
-    <button class="next-btn" id="btn1">Next Video ▶</button>
-  </div>
-    <!-- Lesson 6 -->
-  <div class="wrapper" id="box6">
-    <h3 class="lesson-title">Lesson 6: Fashion club ladies blazer wholesale</h3>
-    <div class="video-frame" id="vframe6">
-      <video id="video6" preload="metadata" controls>
-        <source src="fashion_club_ladies_blazer_wholesale.mp4
-" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
-    </div>
-    <button class="next-btn" id="btn1">Next Video ▶</button>
-  </div>
-    <!-- Lesson 7 -->
-  <div class="wrapper" id="box7">
-    <h3 class="lesson-title">Lesson 7: Glustan Blazer Market</h3>
-    <div class="video-frame" id="vframe7">
-      <video id="video7" preload="metadata" controls>
-        <source src="Gulistan_Blazer_Market_Daily_Ittefaq.mp4" type="video/mp4">
-      </video>
-      <div class="video-shield"></div>
-    </div>
-    <button class="next-btn" id="btn1">Next Video ▶</button>
-  </div>
-  <!-- Completion -->
-  <div class="wrapper" id="completionBox">
-    <h2>🎉 Course Completed!</h2>
-    <p class="done">You have watched all lessons. Thank you!</p>
-  </div>
+</div>
+
+<footer>
+    <p><strong>Global Realtor Circle</strong></p>
+    <p>Expertise. Transparency. Trust.</p>
+    <p>&copy; 2026 Global Realtor Circle. All Rights Reserved.</p>
+</footer>
 
 <script>
-/* ───────────────── USER CONFIG ───────────────── */
-const PROGRESS_KEY = 'ytCourse_lastDone';   // keep same key name
-const lessonVideos = [                      // video element IDs (order matters)
-  document.getElementById('video1'),
-  document.getElementById('video2'),
-  document.getElementById('video3'),
-  document.getElementById('video4'),
-  document.getElementById('video5'),
-  document.getElementById('video6'),
-  document.getElementById('video7'),
+const PROGRESS_KEY = 'grc_course_progress';
+const lessonVideos = [1,2,3,4,5,6,7].map(i => document.getElementById(`video${i}`));
 
-];
-/* ───────────────── INTERNALS ─────────────────── */
-let highestDone = localStorage.getItem(PROGRESS_KEY);
-if (highestDone === null) {
-  highestDone = -1;
-} else {
-  highestDone = Number(highestDone);
-  if (isNaN(highestDone)) highestDone = -1;
+function startCourse() {
+    const name = document.getElementById('userName').value;
+    const email = document.getElementById('userEmail').value;
+    if(!name || !email) return alert("Please fill in your details.");
+    
+    document.getElementById('registration-section').style.display = 'none';
+    document.getElementById('course-content').style.display = 'block';
+    document.getElementById('displayUserName').innerText = name;
+    showBox(-1); // Show preview
 }
 
-
-/* Show correct wrapper */
 function showBox(idx){
-  document.querySelectorAll('.wrapper').forEach(w=>w.classList.remove('active'));
-  if(idx >= lessonVideos.length)      document.getElementById('completionBox').classList.add('active');
-  else if(idx === -1)                 document.getElementById('previewBox').classList.add('active');
-  else                                document.getElementById(`box${idx+1}`).classList.add('active');
+    document.querySelectorAll('.wrapper').forEach(w => w.classList.remove('active'));
+    if(idx === -1) document.getElementById('previewBox').classList.add('active');
+    else if(idx >= lessonVideos.length) {
+        document.getElementById('completionBox').classList.add('active');
+        document.getElementById('examBtn').style.display = 'inline-block'; // Reveal Exam Button
+    }
+    else document.getElementById(`box${idx+1}`).classList.add('active');
 }
 
-/* Start / resume */
-if(highestDone >= lessonVideos.length-1) showBox(lessonVideos.length);
-else if(highestDone >= 0)                showBox(highestDone+1);
-else                                      showBox(-1);
+document.getElementById('startBtn').onclick = () => showBox(0);
 
-document.getElementById('startBtn').onclick = () => showBox(highestDone+1);
+/* Logic for all videos */
+lessonVideos.forEach((vid, i) => {
+    let lastTime = 0;
+    vid.addEventListener('seeking', () => { if(vid.currentTime > lastTime + 1) vid.currentTime = lastTime; });
+    vid.addEventListener('timeupdate', () => { if(!vid.seeking) lastTime = vid.currentTime; });
 
-/* Anti‑skip + unlock logic */
-lessonVideos.forEach((vid, i)=>{
-  let lastTime = 0;
+    vid.addEventListener('ended', () => {
+        document.getElementById(`vframe${i+1}`).classList.add('ended');
+        document.getElementById(`btn${i+1}`).style.display = 'inline-block';
+        if(i === lessonVideos.length - 1) {
+            showBox(7); // Show final completion box
+        }
+    });
 
-  /* block forward seeking */
-  vid.addEventListener('seeking', ()=>{
-    if(vid.currentTime > lastTime + 0.5) vid.currentTime = lastTime;
-  });
-
-  /* update lastTime regularly */
-  vid.addEventListener('timeupdate', ()=>{
-    if(!vid.seeking) lastTime = vid.currentTime;
-  });
-
-  /* when video ends */
-  vid.addEventListener('ended', ()=>{
-    document.getElementById(`vframe${i+1}`).classList.add('ended');   // black shield
     const btn = document.getElementById(`btn${i+1}`);
-    if(btn) btn.style.display = 'inline-block';
-
-    if(i > highestDone){
-      highestDone = i;
-      localStorage.setItem(PROGRESS_KEY, highestDone);
+    if(btn) {
+        btn.onclick = () => {
+            showBox(i+1);
+            if(lessonVideos[i+1]) lessonVideos[i+1].play();
+        };
     }
-
-    // Show completion screen immediately if last lesson finished
-    if(i === lessonVideos.length - 1){
-      showBox(lessonVideos.length);
-    }
-  });
-});
-
-/* Next buttons */
-[1,2].forEach(i=>{
-  const btn=document.getElementById(`btn${i}`);
-  if(!btn) return;
-  btn.onclick = ()=>{
-    showBox(i);
-    lessonVideos[i-1].pause();
-    lessonVideos[i].play();
-    btn.style.display='none';
-  };
 });
 </script>
+
 </body>
 </html>
-
-
